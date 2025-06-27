@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  livekit:
+    image: livekit/livekit-server
+    ports:
+      - "7880:7880"         # signaling
+      - "7881:7881"         # HTTP API
+      - "5349:5349/udp"     # TURN/STUN
+    environment:
+      - LIVEKIT_API_KEY=devkey
+      - LIVEKIT_API_SECRET=devsecretdevsecretdevsecret
+      - "LIVEKIT_KEYS=devkey: devsecretdevsecretdevsecretdevsecretdevsecretdevsecretdevsecretdevsecretdevsecret"
+      - LIVEKIT_WEBRTC_PORT_RANGE_START=50000
+      - LIVEKIT_WEBRTC_PORT_RANGE_END=50010
+      - LIVEKIT_REDIS_HOST=redis
+    depends_on:
+      - redis
+
+  redis:
+    image: redis
