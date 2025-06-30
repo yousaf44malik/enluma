@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  livekit:
+    image: livekit/livekit-server
+    environment:
+      - LIVEKIT_API_KEY=devkey
+      - LIVEKIT_API_SECRET=devsecretdevsecretdevsecret
+      - "LIVEKIT_KEYS=devkey: devsecretdevsecretdevsecretdevsecretdevsecretdevsecretdevsecretdevsecretdevsecret"
+      - LIVEKIT_WEBRTC_PORT_RANGE_START=50000
+      - LIVEKIT_WEBRTC_PORT_RANGE_END=50010
+      - LIVEKIT_REDIS_HOST=redis
+    ports:
+      - "7880:7880"         
+      - "7881:7881"       
+      - "5349:5349/udp"     
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  conversational_agents_be:
+    build:
+      context: ./conversational_agents_be
+    env_file:
+      - ./conversational_agents_be/.env
+    depends_on:
+      - livekit
+      - redis
+
+  agents_playground_fe:
+    build:
+      context: ./agents_playground_fe
+    env_file:
+      - ./agents_playground_fe/.env
+    ports:
+      - "7860:7860"       
+    depends_on:
+      - livekit
